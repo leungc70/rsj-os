@@ -5,17 +5,27 @@
   <meta charset="UTF-8">
   <title>RYAN!</title>
   <link rel="stylesheet" type="text/css" href="./style/desktop.css">
+  <script src="https://use.fontawesome.com/cf7725ca37.js"></script>
+ <!--   <style>
+  #feedback { font-size: 1.4em; }
+  #selectable .ui-selecting { background: #FECA40; }
+  #selectable .ui-selected { background: #F39814; color: white; }
+  #selectable { list-style-type: none; margin: 0; padding: 0; width: 450px; }
+  #selectable li { margin: 3px; padding: 1px; float: left; width: 100px; height: 80px; font-size: 4em; text-align: center; }
+  </style> -->
   <script>
     if (typeof module === 'object') { window.module = module; module = undefined; }
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous"></script>
   <script>
     if (window.module) module = window.module;
   </script>
 </head>
 
 <body background="./images/desktop.png">
-
+<!--<body > -->
   <div>
     <div id="mov1" contenteditable="true" class="item">
       <img src="./images/file_movie.png" />
@@ -41,6 +51,31 @@
       <img src="./images/file_movie.png" />
       <span style="color:white">Monk.S01E07.XviD-AFG.avi</span>
     </div>
+
+
+     <div id="recordDiv"class="record"style="color:white">
+       <i class="fa fa-circle fa-2x text-danger Blink"  style="color:Red"/></i>
+       &nbsp;Recording 
+       <button id="stop" onclick="stopRecording()"> STOP</button>
+      </div>
+ <!--
+    <div>
+      <ol class="test" id="selectable">
+        <li class="ui-state-default">1</li>
+        <li class="ui-state-default">2</li>
+        <li class="ui-state-default">3</li>
+        <li class="ui-state-default">4</li>
+        <li class="ui-state-default">5</li>
+        <li class="ui-state-default">6</li>
+        <li class="ui-state-default">7</li>
+        <li class="ui-state-default">8</li>
+        <li class="ui-state-default">9</li>
+        <li class="ui-state-default">10</li>
+        <li class="ui-state-default">11</li>
+        <li class="ui-state-default">12</li>
+      </ol>
+    </div>
+    -->
   </div>
 
 
@@ -61,8 +96,8 @@
     const menu = new Menu()
     $(document).ready(function () {
       console.log("ready!");
-
-
+      $("#recordDiv").hide();
+      $( "#selectable" ).selectable();
       menu.append(new MenuItem({ label: 'Copy', click() { console.log('item 1 clicked') } }))
       menu.append(new MenuItem({ type: 'separator' }))
       menu.append(new MenuItem({ label: 'Paste' }))
@@ -94,7 +129,11 @@
       menu.append(new MenuItem({ type: 'separator' }))
       menu.append(new MenuItem({
         label: 'Automate', click: function () {
-           dialog.showMessageBox({type:'question',message:'Do you wnat to automate the following action(s)?',detail:'\nSummary : The selected media files will be renamed\n          1 file willbe modified by this action\n',buttons: ["OK","Cancel","Edit"]})
+          var val =dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files will be renamed\n          1 file willbe modified by this action\n', buttons: ["OK", "Cancel", "Edit"] })
+          console.log(val)
+          if (val == 2){
+             $("#recordDiv").show();
+          }
         }
       }))
     }
@@ -109,6 +148,10 @@
       }
 
 
+    }
+    
+    function stopRecording(){
+      $("#recordDiv").hide();
     }
   </script>
 </body>

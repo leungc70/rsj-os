@@ -18,3 +18,26 @@ div.item {
     word-wrap: break-word;
     font-size : 10px;
 }
+
+ol > li{
+    color: white;
+}
+
+
+.Blink {
+  animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;  
+}
+@keyframes blinker {  
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+p {
+    color: white;
+    
+}
+
+div.record {
+    float: right;
+    vertical-align: middle;
+}
