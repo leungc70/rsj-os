@@ -32,18 +32,18 @@
       <span style="color:white">Monk.S01E03.XviD-AFG.avi</span>
     </div>
 
-        <div id="mov4" contenteditable="true" class="item">
+    <div id="mov4" contenteditable="true" class="item">
       <img src="./images/file_movie.png" />
       <span style="color:white">Monk.S01E04.720p.HEVC.x265-MeGusta.mp4</span>
     </div>
 
-        <div id="mov5" contenteditable="true" class="item">
+    <div id="mov5" contenteditable="true" class="item">
       <img src="./images/file_movie.png" />
       <span style="color:white">Monk.S01E07.XviD-AFG.avi</span>
     </div>
   </div>
 
-  
+
   <!-- All of the Node.js APIs are available in this renderer process. -->
 
   <script>
@@ -57,11 +57,10 @@
     ]
     const { remote } = require('electron')
     const { Menu, MenuItem } = remote
-
+    const { dialog } = require('electron').remote
     const menu = new Menu()
     $(document).ready(function () {
       console.log("ready!");
-
 
 
       menu.append(new MenuItem({ label: 'Copy', click() { console.log('item 1 clicked') } }))
@@ -93,10 +92,11 @@
       var not = new Notification(options[0].title, options[0]);
       not.onclick = function () { displaySong(this); };
       menu.append(new MenuItem({ type: 'separator' }))
-      menu.append(new MenuItem({ label: 'Automate',click :function(){
-        alert("CLICKED!");
-      }
-    }))
+      menu.append(new MenuItem({
+        label: 'Automate', click: function () {
+           dialog.showMessageBox({type:'question',message:'Do you wnat to automate the following action(s)?',detail:'\nSummary : All the media files will be renamed\n          3 files willbe modified by this action\n',buttons: ["OK","Cancel","Edit"]})
+        }
+      }))
     }
 
     function getConfirm() {
