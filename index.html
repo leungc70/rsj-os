@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>RYAN!</title>
+  <link rel="stylesheet" type="text/css" href="./style/desktop.css">
+  <script>
+    if (typeof module === 'object') { window.module = module; module = undefined; }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+  <script>
+    if (window.module) module = window.module;
+  </script>
+</head>
+
+<body background="./images/desktop.png">
+
+  <div>
+    <div id="mov1" contenteditable="true" class="item">
+      <img src="./images/file_movie.png" />
+      <span style="color:white">Monk.S01E01.480p.x264-mSD.mp4</span>
+    </div>
+
+    <div id="mov2" contenteditable="true" class="item">
+      <img src="./images/file_movie.png" />
+      <span style="color:white">Monk.S01E02.XviD-AFG.avi</span>
+    </div>
+
+    <div id="mov3" contenteditable="true" class="item">
+      <img src="./images/file_movie.png" />
+      <span style="color:white">Monk.S01E03.XviD-AFG.avi</span>
+    </div>
+
+        <div id="mov4" contenteditable="true" class="item">
+      <img src="./images/file_movie.png" />
+      <span style="color:white">Monk.S01E04.720p.HEVC.x265-MeGusta.mp4</span>
+    </div>
+
+        <div id="mov5" contenteditable="true" class="item">
+      <img src="./images/file_movie.png" />
+      <span style="color:white">Monk.S01E07.XviD-AFG.avi</span>
+    </div>
+  </div>
+
+  
+  <!-- All of the Node.js APIs are available in this renderer process. -->
+
+  <script>
+    // You can also require other files to run in this process
+    var counter = 1;
+    var options = [
+      {
+        title: "Repeated Action Detected!",
+        body: "automation option is now available, right click and select automate"
+      }
+    ]
+    const { remote } = require('electron')
+    const { Menu, MenuItem } = remote
+
+    const menu = new Menu()
+    $(document).ready(function () {
+      console.log("ready!");
+
+
+
+      menu.append(new MenuItem({ label: 'Copy', click() { console.log('item 1 clicked') } }))
+      menu.append(new MenuItem({ type: 'separator' }))
+      menu.append(new MenuItem({ label: 'Paste' }))
+      menu.append(new MenuItem({ label: 'OK' }))
+
+      window.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        menu.popup(remote.getCurrentWindow())
+      }, false)
+
+    });
+
+    $('#mov1,#mov2,#mov3,#mov4,#mov5').on('focus', function () {
+      before = $(this).html();
+    }).on('blur  ', function () {
+      if (before != $(this).html()) {
+        if (counter == 2) {
+          getData();
+        }
+        console.log(counter);
+        counter += 1;
+      }
+    });
+
+
+    function getData() {
+      var not = new Notification(options[0].title, options[0]);
+      not.onclick = function () { displaySong(this); };
+      menu.append(new MenuItem({ type: 'separator' }))
+      menu.append(new MenuItem({ label: 'Automate',click :function(){
+        alert("CLICKED!");
+      }
+    }))
+    }
+
+    function getConfirm() {
+      counter += 1;
+      if (counter == 3) {
+        getData();
+      }
+      else {
+        window.confirm("FUCK THIS SHIT " + counter);
+      }
+
+
+    }
+  </script>
+</body>
+
+</html>
