@@ -97,7 +97,7 @@
     <li class="ui-state-default">
       <div id="mov10" class="item">
         <img src="./images/file_movie.png" />
-        <span contenteditable="true" style="color:white">Monk.S01E05.1080p.HEVC.mp4</span>
+        <ean contenteditable="true" style="color:white">Monk.S01E05.1080p.HEVC.mp4</span>
       </div>
     </li>
     <li class="ui-state-default">
@@ -235,11 +235,14 @@
               for (var i = 0; i < (result_list.length - 1); i++) {
                 var element = result_list[i];
                 $('span:contains(' + element + ')').text(mov.findMovie(element));
-                
+
               }
             }
-            else{
-              folderWindow.webContents.send('messageT', element);
+            else {
+              for (var i = 0; i < (result_list.length - 1); i++) {
+                var element = result_list[i];
+                folderWindow.webContents.send('messageT', $.trim(element));
+              }
             }
 
           }
@@ -260,8 +263,7 @@
     function stopRecording() {
       $("#recordDiv").hide();
       var val = dialog.showMessageBox({ type: 'info', message: 'The following actions have been learn :', detail: '\nSummary : The selected media files\' name will be copied over to Text Editor\n', icon: "./images/file_txt.png", buttons: ["OK", "Cancel"] })
-     alert(val);
-      if (val == 0){
+      if (val == 0) {
         method = false;
       }
 
