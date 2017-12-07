@@ -115,8 +115,8 @@
   </ol>
 
   <!-- All of the Node.js APIs are available in this renderer process. -->
-  <div class="fixed"> 
-  <img id="editor_icon"src="images/app_notepad.png"/>
+  <div class="fixed">
+    <img id="editor_icon" src="images/app_notepad.png" />
   </div>
   <script>
     // You can also require other files to run in this process
@@ -131,13 +131,21 @@
       }
     ]
     const { remote } = require('electron')
-    const { Menu, MenuItem, BrowserWindow } = remote
-    const { dialog } = require('electron').remote
+    const { Menu, MenuItem, BrowserWindow, dialog } = remote
     const menu = new Menu()
     const path = require('path')
     const url = require('url')
     var Movie = require('./movie.js')
     var mov = new Movie();
+    const { ipcRenderer } = require('electron');
+
+
+
+    ipcRenderer.on('message', (event, message) => {
+      console.log(message); // logs out "Hello second window!"
+      ipcRenderer.send('reply', `This message goes back to the main window.`);
+    })
+
 
     let folderWindow
 
@@ -147,9 +155,9 @@
       console.log("ready!");
       $("#recordDiv").hide();
 
-      menu.append(new MenuItem({ label: 'Copy', click() { console.log('item 1 clicked') } }))
-      menu.append(new MenuItem({ type: 'separator' }))
+      menu.append(new MenuItem({ label: 'Copy', role: "copy" }))
       menu.append(new MenuItem({ label: 'Paste' }))
+      menu.append(new MenuItem({ type: 'separator' }))
       menu.append(new MenuItem({ label: 'Rename' }))
 
       window.addEventListener('contextmenu', (e) => {
@@ -158,12 +166,10 @@
       }, false)
 
     });
-    $("#editor_icon").on("click",function(){
+    $("#editor_icon").on("click", function () {
       createfolderWindow();
     });
-    $("#folder1").on("dblclick", function () {
-      createfolderWindow();
-    });
+
 
     $('span').on('focus', function () {
       console.log("FOCUS!");
@@ -180,20 +186,20 @@
 
     $("#selectable").selectable(
       {
-      /* selected: function (event, ui) {
-           if ($(ui.selected).hasClass('click-selected')) {
-             $(ui.selected).removeClass('ui-selected click-selected');
- 
-           } else {
-             $(ui.selected).addClass('click-selected');
- 
-           }
-         },
-         unselected: function (event, ui) {
-           $(ui.unselected).removeClass('click-selected');
-           $(ui.unselected).blur();
-         }, 
-         */
+        /* selected: function (event, ui) {
+             if ($(ui.selected).hasClass('click-selected')) {
+               $(ui.selected).removeClass('ui-selected click-selected');
+   
+             } else {
+               $(ui.selected).addClass('click-selected');
+   
+             }
+           },
+           unselected: function (event, ui) {
+             $(ui.unselected).removeClass('click-selected');
+             $(ui.unselected).blur();
+           }, 
+           */
         stop: function () {
           result = $("#select-result").empty();
           $("li.ui-selected ").each(function () {
@@ -245,14 +251,14 @@
 
     function stopRecording() {
       $("#recordDiv").hide();
-       var val = dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files\' name will be rcopy\n          ' + file_selected + ' file will be modified by this action\n', buttons: ["Yes", "No"] })
-         
+      var val = dialog.showMessageBox({ type: 'info', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files\' name will be rcopy\n          ' + file_selected + ' file will be modified by this action\n', icon: "./images/file_txt.png", buttons: ["Yes", "No"] })
+
 
     }
 
 
     function createfolderWindow() {
-      folderWindow = new BrowserWindow({ height: 600, width: 800,alwaysOnTop:true });
+      folderWindow = new BrowserWindow({ height: 600, width: 300, alwaysOnTop: true });
 
       folderWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'folder.html'),
@@ -260,6 +266,11 @@
         slashes: true
 
       }))
+      folderWindow.webContents.on('did-finish-load', () => {
+        folderWindow.webContents.send('messageT', 'Hello from desktop!')
+      })
+
+      //folderWindow.webContents.openDevTools()
 
       folderWindow.on('closed', function () {
         folderWindow = null

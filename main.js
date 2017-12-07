@@ -3,7 +3,7 @@ const electron = require('electron')
 const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
-const {ipcMain} = electron;
+const { ipcMain } = electron;
 
 const path = require('path')
 const url = require('url')
@@ -29,9 +29,11 @@ function createWindow() {
   }))
 
 
-
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.send('message', 'Hello second window!')
+  })
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+ // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -42,8 +44,9 @@ function createWindow() {
   })
 
 
-}
 
+
+}
 
 
 // This method will be called when Electron has finished
@@ -70,3 +73,5 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.on('reply', (event, message) => console.log(message));
+// => This message goes back to the main window.

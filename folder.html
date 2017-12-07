@@ -24,8 +24,8 @@
     </div>
 
     <!-- Create the editor container -->
-    <div id="editor">
-        <p>Hello World!</p>
+    <div id="editor" style="min-height:500px">
+        <p></p>
     </div>
 
     <!-- Include the Quill library -->
@@ -37,7 +37,28 @@
             modules: { toolbar: '#toolbar' },
             theme: 'snow'
         });
+        const { remote } = require('electron')
+        const { Menu, MenuItem, BrowserWindow, dialog } = remote
+        const { ipcRenderer } = require('electron');
+        const menu = new Menu()
+        menu.append(new MenuItem({ label: 'Copy', role: "copy" }))
+        menu.append(new MenuItem({ label: 'Paste', role: "pasteandmatchstyle" }))
+        menu.append(new MenuItem({ type: 'separator' }))
 
+        window.addEventListener('contextmenu', (e) => {
+            e.preventDefault()
+            menu.popup(remote.getCurrentWindow())
+        }, false)
+
+
+        
+
+        ipcRenderer.on('messageT', (event, message) => {
+            console.log(message); // logs out "Hello second window!"
+            editor.insertText(0, message, 'bold', true);
+            editor.insertText(0, "ffdfsdf\n");
+
+        })
     </script>
 </body>
 
