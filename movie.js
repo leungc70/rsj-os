@@ -11,19 +11,25 @@ function Movie() {
             return 'Mr. Monk and the Candidate: Part 1.mp4'
         }
         else if (name == 'Monk.S01E02.XviD-AFG.avi') {
-            return 'Mr. Monk and the Candidate: Part 2.mp4'
+            return 'Mr. Monk and the Candidate: Part 2.avi'
         }
         else if (name == 'Monk.S01E03.XviD-AFG.avi') {
-            return 'Mr. Monk and the Psychic.mp4'
+            return 'Mr. Monk and the Psychic.avi'
         }
         else if (name == 'Monk.S01E04.720p.HEVC.x265-MeGusta.mp4') {
             return 'Mr. Monk Meets Dale the Whale.mp4'
         }
+        else if (name == 'Monk.S01E05.1080p.HEVC.mp4') {
+            return 'Mr. Monk Goes to the Carnival.mp4'
+        }
         else if (name == 'Monk.S01E07.XviD-AFG.avi') {
-            return 'Mr. Monk and the Billionaire Mugger.mp4'
+            return 'Mr. Monk and the Billionaire Mugger.avi'
+        }
+        else if (name == 'Monk.S01E08.4080HD.mkv') {
+            return 'Mr. Monk and the Other Woman.avi'
         }
         else {
-            return "NO"
+            return "NO NAME FOUND"
         }
     }
 }

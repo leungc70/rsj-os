@@ -55,9 +55,7 @@
 
         ipcRenderer.on('messageT', (event, message) => {
             console.log(message); // logs out "Hello second window!"
-            editor.insertText(0, message, 'bold', true);
-            editor.insertText(0, "ffdfsdf\n");
-
+            editor.insertText(editor.getLength(), message);
         })
     </script>
 </body>

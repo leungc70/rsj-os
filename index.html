@@ -97,7 +97,7 @@
     <li class="ui-state-default">
       <div id="mov10" class="item">
         <img src="./images/file_movie.png" />
-        <span contenteditable="true" style="color:white">Monk.S01E07.XviD-AFG.avi</span>
+        <span contenteditable="true" style="color:white">Monk.S01E05.1080p.HEVC.mp4</span>
       </div>
     </li>
     <li class="ui-state-default">
@@ -109,7 +109,7 @@
     <li class="ui-state-default">
       <div id="mov12" class="item">
         <img src="./images/file_movie.png" />
-        <span contenteditable="true" style="color:white">Monk.S01E07.XviD-AFG.avi</span>
+        <span contenteditable="true" style="color:white">Monk.S01E08.4080HD.mkv</span>
       </div>
     </li>
   </ol>
@@ -121,6 +121,7 @@
   <script>
     // You can also require other files to run in this process
     var counter = 1;
+    var method = true;
     var file_selected = 0;
     var result = '';
     var result_list = [];
@@ -230,10 +231,17 @@
           else if (val == 0) {
             console.log(result_list);
             //$("#mov10 span").text(mov.findMovie('Monk.S01E07.XviD-AFG.avi'));
-            for (var i = 0; i < (result_list.length - 1); i++) {
-              var element = result_list[i];
-              $('span:contains(' + element + ')').text(mov.findMovie(element));
+            if (method === true) {
+              for (var i = 0; i < (result_list.length - 1); i++) {
+                var element = result_list[i];
+                $('span:contains(' + element + ')').text(mov.findMovie(element));
+                
+              }
             }
+            else{
+              folderWindow.webContents.send('messageT', element);
+            }
+
           }
         }
       }))
@@ -251,7 +259,11 @@
 
     function stopRecording() {
       $("#recordDiv").hide();
-      var val = dialog.showMessageBox({ type: 'info', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files\' name will be rcopy\n          ' + file_selected + ' file will be modified by this action\n', icon: "./images/file_txt.png", buttons: ["Yes", "No"] })
+      var val = dialog.showMessageBox({ type: 'info', message: 'The following actions have been learn :', detail: '\nSummary : The selected media files\' name will be copied over to Text Editor\n', icon: "./images/file_txt.png", buttons: ["OK", "Cancel"] })
+     alert(val);
+      if (val == 0){
+        method = false;
+      }
 
 
     }
