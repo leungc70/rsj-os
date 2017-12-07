@@ -41,3 +41,12 @@ div.record {
     float: right;
     vertical-align: middle;
 }
+
+#example1 {
+    background: url(../images/desktop_1024.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+img + span {
+    display: block
+}

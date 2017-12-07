@@ -6,13 +6,37 @@
   <title>RYAN!</title>
   <link rel="stylesheet" type="text/css" href="./style/desktop.css">
   <script src="https://use.fontawesome.com/cf7725ca37.js"></script>
- <!--   <style>
-  #feedback { font-size: 1.4em; }
-  #selectable .ui-selecting { background: #FECA40; }
-  #selectable .ui-selected { background: #F39814; color: white; }
-  #selectable { list-style-type: none; margin: 0; padding: 0; width: 450px; }
-  #selectable li { margin: 3px; padding: 1px; float: left; width: 100px; height: 80px; font-size: 4em; text-align: center; }
-  </style> -->
+  <style>
+    #feedback {
+      font-size: 1.4em;
+    }
+
+    #selectable .ui-selecting {
+      background: #FECA40;
+    }
+
+    #selectable .ui-selected {
+      background: #F39814;
+      color: white;
+    }
+
+    #selectable {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      width: 800px;
+    }
+
+    #selectable li {
+      margin: 3px;
+      padding: 1px;
+      float: left;
+      width: 130px;
+      height: 130px;
+      font-size: 4em;
+      text-align: center;
+    }
+  </style>
   <script>
     if (typeof module === 'object') { window.module = module; module = undefined; }
   </script>
@@ -24,9 +48,19 @@
   </script>
 </head>
 
-<body background="./images/desktop.png">
-<!--<body > -->
+<body id="example1">
+  <!--<body > -->
+
+  <div id="folder1" class="ui-widget-content item">
+    <img src="./images/file_folder.png" />
+    <span style="color:white">Movies</span>
+  </div>
+  <p style="color:white;" id="feedback">
+    <span>You've selected:</span> <span id="select-result">none</span>.
+  </p>
+
   <div>
+    <!--
     <div id="mov1" contenteditable="true" class="item">
       <img src="./images/file_movie.png" />
       <span style="color:white">Monk.S01E01.480p.x264-mSD.mp4</span>
@@ -52,38 +86,61 @@
       <span style="color:white">Monk.S01E07.XviD-AFG.avi</span>
     </div>
 
+ -->
 
-     <div id="recordDiv"class="record"style="color:white">
-       <i class="fa fa-circle fa-2x text-danger Blink"  style="color:Red"/></i>
-       &nbsp;Recording 
-       <button id="stop" onclick="stopRecording()"> STOP</button>
-      </div>
- <!--
-    <div>
-      <ol class="test" id="selectable">
-        <li class="ui-state-default">1</li>
-        <li class="ui-state-default">2</li>
-        <li class="ui-state-default">3</li>
-        <li class="ui-state-default">4</li>
-        <li class="ui-state-default">5</li>
-        <li class="ui-state-default">6</li>
-        <li class="ui-state-default">7</li>
-        <li class="ui-state-default">8</li>
-        <li class="ui-state-default">9</li>
-        <li class="ui-state-default">10</li>
-        <li class="ui-state-default">11</li>
-        <li class="ui-state-default">12</li>
-      </ol>
+
+    <div id="recordDiv" class="record" style="color:white">
+      <i class="fa fa-circle fa-2x text-danger Blink" style="color:Red" /></i>
+      &nbsp;Recording
+      <button id="stop" onclick="stopRecording()"> STOP</button>
     </div>
-    -->
-  </div>
 
+
+
+  </div>
+  <br>
+  <br>
+  <ol id="selectable">
+    <li id="mov6" class="ui-state-default">
+      <div class="item">
+        <img src="./images/file_movie.png" />
+        <span contenteditable="true" style="color:white">Monk.S01E01.480p.x264-mSD.mp4</span>
+      </div>
+    </li>
+    <li class="ui-state-default">
+      <div id="mov7" class="item">
+        <img src="./images/file_movie.png" />
+        <span contenteditable="true" style="color:white">Monk.S01E02.XviD-AFG.avi</span>
+      </div>
+    </li>
+    <li class="ui-state-default">
+      <div id="mov8" class="item">
+        <img src="./images/file_movie.png" />
+        <span contenteditable="true" style="color:white">Monk.S01E03.XviD-AFG.avi</span>
+      </div>
+    </li>
+    <li class="ui-state-default">
+      <div id="mov9" class="item">
+        <img src="./images/file_movie.png" />
+        <span contenteditable="true" style="color:white">Monk.S01E04.720p.HEVC.x265-MeGusta.mp4</span>
+      </div>
+    </li>
+    <li class="ui-state-default">
+      <div id="mov10" class="item">
+        <img src="./images/file_movie.png" />
+        <span contenteditable="true" style="color:white">Monk.S01E07.XviD-AFG.avi</span>
+      </div>
+    </li>
+  </ol>
 
   <!-- All of the Node.js APIs are available in this renderer process. -->
 
   <script>
     // You can also require other files to run in this process
     var counter = 1;
+    var file_selected = 0;
+    var result = '';
+    var result_list = [];
     var options = [
       {
         title: "Repeated Action Detected!",
@@ -91,17 +148,26 @@
       }
     ]
     const { remote } = require('electron')
-    const { Menu, MenuItem } = remote
+    const { Menu, MenuItem, BrowserWindow } = remote
     const { dialog } = require('electron').remote
     const menu = new Menu()
+    const path = require('path')
+    const url = require('url')
+    var Movie = require('./movie.js')
+    var mov = new Movie();
+
+    let folderWindow
+
+
+
     $(document).ready(function () {
       console.log("ready!");
       $("#recordDiv").hide();
-      $( "#selectable" ).selectable();
+
       menu.append(new MenuItem({ label: 'Copy', click() { console.log('item 1 clicked') } }))
       menu.append(new MenuItem({ type: 'separator' }))
       menu.append(new MenuItem({ label: 'Paste' }))
-      menu.append(new MenuItem({ label: 'OK' }))
+      menu.append(new MenuItem({ label: 'Rename' }))
 
       window.addEventListener('contextmenu', (e) => {
         e.preventDefault()
@@ -110,7 +176,12 @@
 
     });
 
-    $('#mov1,#mov2,#mov3,#mov4,#mov5').on('focus', function () {
+    $("#folder1").on("dblclick", function () {
+      createfolderWindow();
+    });
+
+    $('span').on('focus', function () {
+      console.log("FOCUS!");
       before = $(this).html();
     }).on('blur  ', function () {
       if (before != $(this).html()) {
@@ -122,6 +193,37 @@
       }
     });
 
+    $("#selectable").selectable(
+      {
+        /* selected: function (event, ui) {
+           if ($(ui.selected).hasClass('click-selected')) {
+             $(ui.selected).removeClass('ui-selected click-selected');
+ 
+           } else {
+             $(ui.selected).addClass('click-selected');
+ 
+           }
+         },
+         unselected: function (event, ui) {
+           $(ui.unselected).removeClass('click-selected');
+           $(ui.unselected).blur();
+         }, */
+
+        stop: function () {
+          result = $("#select-result").empty();
+          $("li.ui-selected ").each(function () {
+            console.log(this);
+            var index = $("#selectable li").index(this);
+            /*console.log(index);*/
+            result.append($.trim($(this).text()) + ",");
+            console.log(result[0].innerText);
+            console.log(result[0].innerText.split(","));
+            file_selected = result[0].innerText.split(",").length - 1;
+            result_list = result[0].innerText.split(",");
+          });
+        }
+      }
+    );
 
     function getData() {
       var not = new Notification(options[0].title, options[0]);
@@ -129,10 +231,18 @@
       menu.append(new MenuItem({ type: 'separator' }))
       menu.append(new MenuItem({
         label: 'Automate', click: function () {
-          var val =dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files will be renamed\n          1 file willbe modified by this action\n', buttons: ["OK", "Cancel", "Edit"] })
+          var val = dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files will be renamed\n          ' + file_selected + ' file will be modified by this action\n', buttons: ["OK", "Cancel", "Edit"] })
           console.log(val)
-          if (val == 2){
-             $("#recordDiv").show();
+          if (val == 2) {
+            $("#recordDiv").show();
+          }
+          else if (val == 0) {
+            console.log(result_list);
+            //$("#mov10 span").text(mov.findMovie('Monk.S01E07.XviD-AFG.avi'));
+            for (var i = 0; i < (result_list.length -1); i++) {
+              var element = result_list[i];
+              $('span:contains('+element+')').text(mov.findMovie(element));
+            }
           }
         }
       }))
@@ -146,12 +256,27 @@
       else {
         window.confirm("FUCK THIS SHIT " + counter);
       }
-
-
     }
-    
-    function stopRecording(){
+
+    function stopRecording() {
       $("#recordDiv").hide();
+    }
+
+
+    function createfolderWindow() {
+      folderWindow = new BrowserWindow({ height: 600, width: 800 });
+
+      folderWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'folder.html'),
+        protocol: 'file',
+        slashes: true
+
+      }))
+
+      folderWindow.on('closed', function () {
+        folderWindow = null
+      })
+
     }
   </script>
 </body>
