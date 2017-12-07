@@ -26,22 +26,22 @@ function Movie() {
             return 'Mr. Monk and the Billionaire Mugger.avi'
         }
         else if (name == 'Monk.S01E08.4080HD.mkv') {
-            return 'Mr. Monk and the Other Woman.avi'
+            return 'Mr. Monk and the Other Woman.mkv'
         }
         else if (name == 'Monk.S01E09.4080HD.mkv') {
-            return 'Mr. Monk and the Other Woman.avi'
+            return 'Mr. Monk and the Marathon Man.mkv'
         }
         else if (name == 'Monk.S01E10.mkv') {
-            return 'Mr. Monk and the Other Woman.avi'
+            return 'Mr. Monk Takes a Vacation.mkv'
         }
         else if (name == 'Monk.S01E11.1080HDTV.mkv') {
-            return 'Mr. Monk and the Other Woman.avi'
+            return 'Mr. Monk and the Earthquake.mkv'
         }
         else if (name == 'Monk.S01E12.mkv') {
-            return 'Mr. Monk and the Other Woman.avi'
+            return 'Mr. Monk and the Red-Headed Stranger.mkv'
         }
         else if (name == 'Monk.S01E13.FINAL.mkv') {
-            return 'Mr. Monk and the Other Woman.avi'
+            return 'Mr. Monk and the Airplane.mkv'
         }
         else {
             return "NO NAME FOUND"

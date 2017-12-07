@@ -236,7 +236,13 @@
       menu.append(new MenuItem({ type: 'separator' }))
       menu.append(new MenuItem({
         label: 'Automate', click: function () {
-          var val = dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files will be renamed\n          ' + file_selected + ' file will be modified by this action\n', buttons: ["OK", "Cancel", "Edit"] })
+          if (method === true){
+            var detail_msg = '\nSummary : The selected media files will be renamed\n          ';
+          }
+          else{
+            var detail_msg = '\nSummary : The selected media files will be copied to the text edittor\n'  
+          }
+          var val = dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail:  detail_msg + file_selected + ' file will be modified by this action\n', buttons: ["OK", "Cancel", "Edit"] })
           console.log(val)
           if (val == 2) {
             $("#recordDiv").show();
