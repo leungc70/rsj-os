@@ -4,165 +4,60 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Folder</title>
+    <title>Editor</title>
+    <!-- Include Quill stylesheet -->
+    <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet">
 
-    <style>
-        body {
-            font-size: 12px;
-        }
-
-        #feedback {
-            font-size: 1.4em;
-        }
-
-        #selectable .ui-selecting {
-            background: #FECA40;
-        }
-
-        #selectable .ui-selected {
-            background: #F39814;
-            color: white;
-        }
-
-        #selectable {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            width: 60%;
-        }
-
-        #selectable li {
-            margin: 3px;
-            padding: 0.4em;
-            font-size: 1.4em;
-            height: 18px;
-        }
-    </style>
     <script>
         if (typeof module === 'object') { window.module = module; module = undefined; }
     </script>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-        const { remote } = require('electron')
-        const { Menu, MenuItem, BrowserWindow } = remote
-        const { dialog } = require('electron').remote
-        const menu = new Menu()
-
-        var counter = 1;
-        var options = [
-            {
-                title: "Repeated Action Detected!",
-                body: "automation option is now available, right click and select automate"
-            }
-        ]
-        $(document).ready(function () {
-            console.log("ready!");
-            $("#recordDiv").hide();
-            $("#selectable").selectable();
-            menu.append(new MenuItem({ label: 'Copy', click() { console.log('item 1 clicked') } }))
-            menu.append(new MenuItem({ type: 'separator' }))
-            menu.append(new MenuItem({ label: 'Paste' }))
-            menu.append(new MenuItem({ label: 'Rename' }))
-
-            window.addEventListener('contextmenu', (e) => {
-                e.preventDefault()
-                menu.popup(remote.getCurrentWindow())
-            }, false)
-
-        });
-
-        $('#selectable').on('focus', function () {
-            console.log("FOCUS!");
-            before = $(this).html();
-        }).on('blur  ', function () {
-            if (before != $(this).html()) {
-                if (counter == 2) {
-                    getData();
-                }
-                console.log(counter);
-                counter += 1;
-            }
-        });
 
 
-
-        function getData() {
-            var not = new Notification(options[0].title, options[0]);
-            not.onclick = function () { displaySong(this); };
-            menu.append(new MenuItem({ type: 'separator' }))
-            menu.append(new MenuItem({
-                label: 'Automate', click: function () {
-                    var val = dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files will be renamed\n          1 file willbe modified by this action\n', buttons: ["OK", "Cancel", "Edit"] })
-                    console.log(val)
-                    if (val == 2) {
-                        $("#recordDiv").show();
-                    }
-                }
-            }))
-        }
-
-
-        $(function () {
-            $("#selectable li").on("click", function () {
-                console.log('csdcs');
-                $('.ui-selected').removeClass('ui-selected');
-            });
-
-            $('#mov1,#mov2,#mov3,#mov4,#mov5').on('focus', function () {
-                before = $(this).html();
-            }).on('blur  ', function () {
-                if (before != $(this).html()) {
-                    if (counter == 2) {
-                        getData();
-                    }
-                    console.log(counter);
-                    counter += 1;
-                }
-            });
-            $("#selectable").selectable({
-                selected: function (event, ui) {
-                    if ($(ui.selected).hasClass('click-selected')) {
-                        $(ui.selected).removeClass('ui-selected click-selected');
-
-                    } else {
-                        $(ui.selected).addClass('click-selected');
-
-                    }
-                },
-                unselected: function (event, ui) {
-                    $(ui.unselected).removeClass('click-selected');
-                    $(ui.unselected).blur();
-                },
-                stop: function () {
-                    var result = $("#select-result").empty();
-                    $(".ui-selected", this).each(function () {
-                        console.log(this);
-                        var index = $("#selectable li").index(this);
-                        result.append($(this).text()+" ||  ");
-                    });
-                }
-            });
-        });
-    </script>
 </head>
 
 <body>
 
-    <p id="feedback">
-        <span>You've selected:</span> <span id="select-result">none</span>.
-    </p>
+    <!-- Create the toolbar container -->
+    <div id="toolbar">
+        <button class="ql-bold">Bold</button>
+        <button class="ql-italic">Italic</button>
+    </div>
 
-    <ol id="selectable">
-        <li id="mov1" contenteditable="true" class="ui-widget-content">Monk.S01E01.480p.x264-mSD.mp4</li>
-        <li id="mov2" contenteditable="true" class="ui-widget-content">Monk.S01E02.XviD-AFG.avi</li>
-        <li id="mov3" contenteditable="true" class="ui-widget-content">Monk.S01E03.XviD-AFG.avi</li>
-        <li id="mov4" contenteditable="true" class="ui-widget-content">Monk.S01E04.720p.HEVC.x265-MeGusta.mp4</li>
-        <li id="mov5" class="ui-widget-content">Monk.S01E07.XviD-AFG.avi</li>
+    <!-- Create the editor container -->
+    <div id="editor" style="min-height:500px">
+        <p></p>
+    </div>
 
-    </ol>
+    <!-- Include the Quill library -->
+    <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
+
+    <!-- Initialize Quill editor -->
+    <script>
+        var editor = new Quill('#editor', {
+            modules: { toolbar: '#toolbar' },
+            theme: 'snow'
+        });
+        const { remote } = require('electron')
+        const { Menu, MenuItem, BrowserWindow, dialog } = remote
+        const { ipcRenderer } = require('electron');
+        const menu = new Menu()
+        menu.append(new MenuItem({ label: 'Copy', role: "copy" }))
+        menu.append(new MenuItem({ label: 'Paste', role: "pasteandmatchstyle" }))
+        menu.append(new MenuItem({ type: 'separator' }))
+
+        window.addEventListener('contextmenu', (e) => {
+            e.preventDefault()
+            menu.popup(remote.getCurrentWindow())
+        }, false)
 
 
+        
+
+        ipcRenderer.on('messageT', (event, message) => {
+            console.log(message); // logs out "Hello second window!"
+            editor.insertText(editor.getLength(), message);
+        })
+    </script>
 </body>
 
 </html>

@@ -32,7 +32,7 @@
       padding: 1px;
       float: left;
       width: 130px;
-      height: 130px;
+      height: 150px;
       font-size: 4em;
       text-align: center;
     }
@@ -51,43 +51,12 @@
 <body id="example1">
   <!--<body > -->
 
-  <div id="folder1" class="ui-widget-content item">
-    <img src="./images/file_folder.png" />
-    <span style="color:white">Movies</span>
-  </div>
-  <p style="color:white;" id="feedback">
+  <br>
+  <p style="color:white; font-size:15px;" id="feedback">
     <span>You've selected:</span> <span id="select-result">none</span>.
   </p>
 
   <div>
-    <!--
-    <div id="mov1" contenteditable="true" class="item">
-      <img src="./images/file_movie.png" />
-      <span style="color:white">Monk.S01E01.480p.x264-mSD.mp4</span>
-    </div>
-
-    <div id="mov2" contenteditable="true" class="item">
-      <img src="./images/file_movie.png" />
-      <span style="color:white">Monk.S01E02.XviD-AFG.avi</span>
-    </div>
-
-    <div id="mov3" contenteditable="true" class="item">
-      <img src="./images/file_movie.png" />
-      <span style="color:white">Monk.S01E03.XviD-AFG.avi</span>
-    </div>
-
-    <div id="mov4" contenteditable="true" class="item">
-      <img src="./images/file_movie.png" />
-      <span style="color:white">Monk.S01E04.720p.HEVC.x265-MeGusta.mp4</span>
-    </div>
-
-    <div id="mov5" contenteditable="true" class="item">
-      <img src="./images/file_movie.png" />
-      <span style="color:white">Monk.S01E07.XviD-AFG.avi</span>
-    </div>
-
- -->
-
 
     <div id="recordDiv" class="record" style="color:white">
       <i class="fa fa-circle fa-2x text-danger Blink" style="color:Red" /></i>
@@ -125,19 +94,47 @@
         <span contenteditable="true" style="color:white">Monk.S01E04.720p.HEVC.x265-MeGusta.mp4</span>
       </div>
     </li>
+
     <li class="ui-state-default">
-      <div id="mov10" class="item">
+      <div id="mov11" class="item">
         <img src="./images/file_movie.png" />
         <span contenteditable="true" style="color:white">Monk.S01E07.XviD-AFG.avi</span>
+      </div>
+    </li>
+    <li class="ui-state-default">
+      <div id="mov12" class="item">
+        <img src="./images/file_movie.png" />
+        <span contenteditable="true" style="color:white">Monk.S01E08.4080HD.mkv</span>
+      </div>
+    </li>
+        <li class="ui-state-default">
+      <div  class="item">
+        <img src="./images/file_movie.png" />
+        <span contenteditable="true" style="color:white">Monk.S01E09.4080HD.mkv</span>
+      </div>
+    </li>
+        <li class="ui-state-default">
+      <div  class="item">
+        <img src="./images/file_movie.png" />
+        <span contenteditable="true" style="color:white">Monk.S01E10.mkv</span>
+      </div>
+    </li>
+        <li class="ui-state-default">
+      <div  class="item">
+        <img src="./images/file_movie.png" />
+        <span contenteditable="true" style="color:white">Monk.S01E11.1080HDTV.mkv</span>
       </div>
     </li>
   </ol>
 
   <!-- All of the Node.js APIs are available in this renderer process. -->
-
+  <div class="fixed">
+    <img id="editor_icon" src="images/app_notepad.png" />
+  </div>
   <script>
     // You can also require other files to run in this process
     var counter = 1;
+    var method = true;
     var file_selected = 0;
     var result = '';
     var result_list = [];
@@ -148,13 +145,21 @@
       }
     ]
     const { remote } = require('electron')
-    const { Menu, MenuItem, BrowserWindow } = remote
-    const { dialog } = require('electron').remote
+    const { Menu, MenuItem, BrowserWindow, dialog } = remote
     const menu = new Menu()
     const path = require('path')
     const url = require('url')
     var Movie = require('./movie.js')
     var mov = new Movie();
+    const { ipcRenderer } = require('electron');
+
+
+
+    ipcRenderer.on('message', (event, message) => {
+      console.log(message); // logs out "Hello second window!"
+      ipcRenderer.send('reply', `This message goes back to the main window.`);
+    })
+
 
     let folderWindow
 
@@ -164,9 +169,9 @@
       console.log("ready!");
       $("#recordDiv").hide();
 
-      menu.append(new MenuItem({ label: 'Copy', click() { console.log('item 1 clicked') } }))
-      menu.append(new MenuItem({ type: 'separator' }))
+      menu.append(new MenuItem({ label: 'Copy', role: "copy" }))
       menu.append(new MenuItem({ label: 'Paste' }))
+      menu.append(new MenuItem({ type: 'separator' }))
       menu.append(new MenuItem({ label: 'Rename' }))
 
       window.addEventListener('contextmenu', (e) => {
@@ -175,10 +180,10 @@
       }, false)
 
     });
-
-    $("#folder1").on("dblclick", function () {
+    $("#editor_icon").on("click", function () {
       createfolderWindow();
     });
+
 
     $('span').on('focus', function () {
       console.log("FOCUS!");
@@ -196,19 +201,19 @@
     $("#selectable").selectable(
       {
         /* selected: function (event, ui) {
-           if ($(ui.selected).hasClass('click-selected')) {
-             $(ui.selected).removeClass('ui-selected click-selected');
- 
-           } else {
-             $(ui.selected).addClass('click-selected');
- 
-           }
-         },
-         unselected: function (event, ui) {
-           $(ui.unselected).removeClass('click-selected');
-           $(ui.unselected).blur();
-         }, */
-
+             if ($(ui.selected).hasClass('click-selected')) {
+               $(ui.selected).removeClass('ui-selected click-selected');
+   
+             } else {
+               $(ui.selected).addClass('click-selected');
+   
+             }
+           },
+           unselected: function (event, ui) {
+             $(ui.unselected).removeClass('click-selected');
+             $(ui.unselected).blur();
+           }, 
+           */
         stop: function () {
           result = $("#select-result").empty();
           $("li.ui-selected ").each(function () {
@@ -231,7 +236,13 @@
       menu.append(new MenuItem({ type: 'separator' }))
       menu.append(new MenuItem({
         label: 'Automate', click: function () {
-          var val = dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files will be renamed\n          ' + file_selected + ' file will be modified by this action\n', buttons: ["OK", "Cancel", "Edit"] })
+          if (method === true){
+            var detail_msg = '\nSummary : The selected media files will be renamed\n          ';
+          }
+          else{
+            var detail_msg = '\nSummary : The selected media files will be copied to the text edittor\n'  
+          }
+          var val = dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail:  detail_msg + file_selected + ' file will be modified by this action\n', buttons: ["OK", "Cancel", "Edit"] })
           console.log(val)
           if (val == 2) {
             $("#recordDiv").show();
@@ -239,10 +250,20 @@
           else if (val == 0) {
             console.log(result_list);
             //$("#mov10 span").text(mov.findMovie('Monk.S01E07.XviD-AFG.avi'));
-            for (var i = 0; i < (result_list.length -1); i++) {
-              var element = result_list[i];
-              $('span:contains('+element+')').text(mov.findMovie(element));
+            if (method === true) {
+              for (var i = 0; i < (result_list.length - 1); i++) {
+                var element = result_list[i];
+                $('span:contains(' + element + ')').text(mov.findMovie(element));
+
+              }
             }
+            else {
+              for (var i = 0; i < (result_list.length - 1); i++) {
+                var element = result_list[i];
+                folderWindow.webContents.send('messageT', $.trim(element));
+              }
+            }
+
           }
         }
       }))
@@ -260,11 +281,17 @@
 
     function stopRecording() {
       $("#recordDiv").hide();
+      var val = dialog.showMessageBox({ type: 'info', message: 'The following actions have been learn :', detail: '\nSummary : The selected media files\' name will be copied over to Text Editor\n', icon: "./images/file_txt.png", buttons: ["OK", "Cancel"] })
+      if (val == 0) {
+        method = false;
+      }
+
+
     }
 
 
     function createfolderWindow() {
-      folderWindow = new BrowserWindow({ height: 600, width: 800 });
+      folderWindow = new BrowserWindow({ height: 600, width: 300, alwaysOnTop: true });
 
       folderWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'folder.html'),
@@ -272,6 +299,12 @@
         slashes: true
 
       }))
+      folderWindow.webContents.on('did-finish-load', () => {
+        //folderWindow.webContents.send('messageT', 'Hello from desktop!')
+        console.log("ready for data");
+      })
+
+      //folderWindow.webContents.openDevTools()
 
       folderWindow.on('closed', function () {
         folderWindow = null
