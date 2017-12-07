@@ -48,7 +48,7 @@
   </script>
 </head>
 
-<body background="./images/desktop_1024.png">
+<body id="example1">
   <!--<body > -->
 
   <div id="folder1" class="ui-widget-content item">
@@ -102,7 +102,7 @@
   <br>
   <ol id="selectable">
     <li id="mov6" class="ui-state-default">
-      <div  class="item">
+      <div class="item">
         <img src="./images/file_movie.png" />
         <span contenteditable="true" style="color:white">Monk.S01E01.480p.x264-mSD.mp4</span>
       </div>
@@ -131,7 +131,6 @@
         <span contenteditable="true" style="color:white">Monk.S01E07.XviD-AFG.avi</span>
       </div>
     </li>
-    <li class="ui-state-default">6</li>
   </ol>
 
   <!-- All of the Node.js APIs are available in this renderer process. -->
@@ -139,7 +138,9 @@
   <script>
     // You can also require other files to run in this process
     var counter = 1;
+    var file_selected = 0;
     var result = '';
+    var result_list = [];
     var options = [
       {
         title: "Repeated Action Detected!",
@@ -152,6 +153,8 @@
     const menu = new Menu()
     const path = require('path')
     const url = require('url')
+    var Movie = require('./movie.js')
+    var mov = new Movie();
 
     let folderWindow
 
@@ -192,19 +195,19 @@
 
     $("#selectable").selectable(
       {
-       /* selected: function (event, ui) {
-          if ($(ui.selected).hasClass('click-selected')) {
-            $(ui.selected).removeClass('ui-selected click-selected');
-
-          } else {
-            $(ui.selected).addClass('click-selected');
-
-          }
-        },
-        unselected: function (event, ui) {
-          $(ui.unselected).removeClass('click-selected');
-          $(ui.unselected).blur();
-        }, */
+        /* selected: function (event, ui) {
+           if ($(ui.selected).hasClass('click-selected')) {
+             $(ui.selected).removeClass('ui-selected click-selected');
+ 
+           } else {
+             $(ui.selected).addClass('click-selected');
+ 
+           }
+         },
+         unselected: function (event, ui) {
+           $(ui.unselected).removeClass('click-selected');
+           $(ui.unselected).blur();
+         }, */
 
         stop: function () {
           result = $("#select-result").empty();
@@ -212,9 +215,11 @@
             console.log(this);
             var index = $("#selectable li").index(this);
             /*console.log(index);*/
-            result.append($(this).text() + ",");
+            result.append($.trim($(this).text()) + ",");
             console.log(result[0].innerText);
             console.log(result[0].innerText.split(","));
+            file_selected = result[0].innerText.split(",").length - 1;
+            result_list = result[0].innerText.split(",");
           });
         }
       }
@@ -226,10 +231,18 @@
       menu.append(new MenuItem({ type: 'separator' }))
       menu.append(new MenuItem({
         label: 'Automate', click: function () {
-          var val = dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files will be renamed\n          1 file willbe modified by this action\n', buttons: ["OK", "Cancel", "Edit"] })
+          var val = dialog.showMessageBox({ type: 'question', message: 'Do you wnat to automate the following action(s)?', detail: '\nSummary : The selected media files will be renamed\n          ' + file_selected + ' file willbe modified by this action\n', buttons: ["OK", "Cancel", "Edit"] })
           console.log(val)
           if (val == 2) {
             $("#recordDiv").show();
+          }
+          else if (val == 0) {
+            console.log(result_list);
+            //$("#mov10 span").text(mov.findMovie('Monk.S01E07.XviD-AFG.avi'));
+            for (var i = 0; i < (result_list.length -1); i++) {
+              var element = result_list[i];
+              $('span:contains('+element+')').text(mov.findMovie(element));
+            }
           }
         }
       }))
